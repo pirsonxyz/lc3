@@ -35,5 +35,5 @@ enum OpCodes {
     OP_TRAP    /* execute trap */
 }
 fn main() {
-    println!("Hello, lc3");
+    println!("Hello, lc3!");
 }
