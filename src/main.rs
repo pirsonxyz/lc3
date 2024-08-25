@@ -1,5 +1,5 @@
-use std::{env, process, u16, usize};
 use std::rc::Rc;
+use std::{env, process, u16, usize};
 const MEMORY_MAX: usize = 1 << 16;
 const MEMORY: [u16; MEMORY_MAX] = [0; MEMORY_MAX];
 const R_COUNT: usize = 10;
@@ -85,7 +85,9 @@ fn update_flags(result: u16, reg: &mut [u16; R_COUNT]) {
     let r_cond = R_COND as usize;
     if reg[r] == 0 {
         reg[r_cond] = FL_ZRO as u16;
-    } else if reg[r] >> 15 != 0/* a 1 in the left-most bit indicates that the result is negative*/ {
+    } else if reg[r] >> 15 != 0
+    /* a 1 in the left-most bit indicates that the result is negative*/
+    {
         reg[r_cond] = FL_NEG as u16;
     } else {
         reg[r_cond] = FL_POS as u16;
@@ -128,11 +130,9 @@ fn main() {
                     if imm_flag != 0 {
                         let imm5 = sign_extend(instr & 0x1F, 5);
                         reg[r0 as usize] = reg[r1 as usize] + imm5;
-                    }
-                    else {
+                    } else {
                         let r2 = instr & 0x7;
                         reg[r0 as usize] = reg[r1 as usize] + reg[r2 as usize];
-
                     }
                     update_flags(r0, &mut reg);
                 }
@@ -155,5 +155,4 @@ fn main() {
             None => {}
         }
     }
-
 }
