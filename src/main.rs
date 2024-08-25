@@ -96,7 +96,7 @@ fn update_flags(result: u16, reg: &mut [u16; R_COUNT]) {
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 {
-        println!("lc3vm [image-file1] ...");
+        println!("Usage: lc3 [image-file1] ...");
         std::process::exit(2);
     }
     for arg in args {
