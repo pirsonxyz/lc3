@@ -115,11 +115,11 @@ fn main() {
         let current_pos = reg[R_PC as usize];
         let instr = mem_read(current_pos.into());
         let instr_op = instr as u16 >> 12;
+        let instr = instr as u16;
         let op = OpCodes::from_u16(instr_op);
         match op {
             Some(op) => match op {
                 OP_ADD => {
-                    let instr = instr as u16;
                     // Destination register
                     let r0 = instr >> 9 & 0x7;
                     // First operand(SR1)
@@ -142,15 +142,29 @@ fn main() {
                 OP_JMP => {}
                 OP_JSR => {}
                 OP_LD => {}
-                OP_LDI => {}
+                OP_LDI => {
+                        // DR
+                        let r0 = instr >> 9 & 0x7;
+                        // PCoffset 9
+                        let pc_offset = sign_extend(instr &0x1FF, 9);
+                        let pc = mem_read((reg[R_PC as usize] + pc_offset) as usize);
+                        reg[r0 as usize] = mem_read(pc as usize) as u16;
+                        update_flags(r0, &mut reg);
+                }
                 OP_LDR => {}
                 OP_LEA => {}
                 OP_ST => {}
                 OP_STI => {}
                 OP_STR => {}
                 OP_TRAP => {}
-                OP_RES => {}
-                OP_RTI => {}
+                OP_RES => {
+                    eprintln!("Bad Opcode");
+                    break;
+                }
+                OP_RTI => {
+                    eprintln!("Bad Opcode");
+                    break;
+                }
             },
             None => {}
         }
