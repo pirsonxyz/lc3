@@ -136,20 +136,38 @@ fn main() {
                     }
                     update_flags(r0, &mut reg);
                 }
-                OP_AND => {}
-                OP_NOT => {}
+                OP_AND => {
+                    let r0 = instr >> 9 & 0x7;
+                    let r1 = instr >> 6 & 0x7;
+                    let imm_flag = instr >> 5 & 0x1;
+
+                    if imm_flag != 0 {
+                        let imm5 = sign_extend(instr & 0x1F, 5);
+                        reg[r0 as usize] = reg[r1 as usize] & imm5;
+                    } else {
+                        let r2 = instr & 0x7;
+                        reg[r0 as usize] = reg[r1 as usize] & reg[r2 as usize];
+                    }
+                    update_flags(r0, &mut reg);
+                }
+                OP_NOT => {
+                    let r0 = instr >> 9 & 0x7;
+                    let r1 = instr >> 6 & 0x7;
+                    reg[r0 as usize] = !reg[r1 as usize];
+                    update_flags(r0, &mut reg);
+                }
                 OP_BR => {}
                 OP_JMP => {}
                 OP_JSR => {}
                 OP_LD => {}
                 OP_LDI => {
-                        // DR
-                        let r0 = instr >> 9 & 0x7;
-                        // PCoffset 9
-                        let pc_offset = sign_extend(instr &0x1FF, 9);
-                        let pc = mem_read((reg[R_PC as usize] + pc_offset) as usize);
-                        reg[r0 as usize] = mem_read(pc as usize) as u16;
-                        update_flags(r0, &mut reg);
+                    // DR
+                    let r0 = instr >> 9 & 0x7;
+                    // PCoffset 9
+                    let pc_offset = sign_extend(instr & 0x1FF, 9);
+                    let pc = mem_read((reg[R_PC as usize] + pc_offset) as usize);
+                    reg[r0 as usize] = mem_read(pc as usize) as u16;
+                    update_flags(r0, &mut reg);
                 }
                 OP_LDR => {}
                 OP_LEA => {}
