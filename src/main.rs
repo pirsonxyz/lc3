@@ -1,5 +1,4 @@
-use std::rc::Rc;
-use std::{env, process, u16, usize};
+use std::{env, u16, usize};
 const MEMORY_MAX: usize = 1 << 16;
 const MEMORY: [u16; MEMORY_MAX] = [0; MEMORY_MAX];
 const R_COUNT: usize = 10;
@@ -23,7 +22,6 @@ enum ConditionFlags {
     FL_NEG = 1 << 2,
 }
 #[derive(Clone, Copy, Debug)]
-#[repr(u16)]
 #[allow(non_camel_case_types)]
 enum OpCodes {
     OP_BR = 0, /* branch */
@@ -80,6 +78,7 @@ fn sign_extend(mut x: u16, bit_count: i32) -> u16 {
     }
     x
 }
+
 fn update_flags(result: u16, reg: &mut [u16; R_COUNT]) {
     let r = result as usize;
     let r_cond = R_COND as usize;
