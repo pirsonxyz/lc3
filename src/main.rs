@@ -155,7 +155,13 @@ fn main() {
                     reg[r0 as usize] = !reg[r1 as usize];
                     update_flags(r0, &mut reg);
                 }
-                OP_BR => {}
+                OP_BR => {
+                    let pc_offset = sign_extend(instr & 0x1FF, 9);
+                    let cond_flag = instr >> 9 & 0x7;
+                    if cond_flag & reg[R_COND as usize] != 0 {
+                        reg[R_PC as usize] += pc_offset;
+                    }
+                }
                 OP_JMP => {}
                 OP_JSR => {}
                 OP_LD => {}
